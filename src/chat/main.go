@@ -1,17 +1,17 @@
 package main
 
 import (
-	"net/http"
 	"log"
+	"net/http"
+	"path/filepath"
 	"sync"
 	"text/template"
-	"path/filepath"
 )
 
 type templateHandler struct {
-	once sync.Once
+	once     sync.Once
 	filename string
-	templ *template.Template
+	templ    *template.Template
 }
 
 func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -22,9 +22,11 @@ func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	r := newRoom()
 	http.Handle("/", &templateHandler{filename: "chat.html"})
+	http.Handle("/room", r)
+	go r.run() // Start chat room.
 	if err := http.ListenAndServe(":3000", nil); err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
 }
-
