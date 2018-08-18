@@ -3,8 +3,70 @@
 <head>
   <meta charset="UTF-8">
   <title>GoChat</title>
+  <style>
+    html {
+      font-size: 62.5%;
+    }
+    body {
+      font-family: sans-serif;
+    }
+    input {
+      display: block;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+  </style>
 </head>
 <body>
-  <p>Let's Chatting!!(From template)</p>
+  <ul id="messages"></ul>
+  <p>Chat Application with WebSocket</p>
+  <div>
+    <form id="chatBox">
+      <textarea class="chatTextArea" name="chatText" cols="30" rows="10"></textarea>
+      <button>Submit</button>
+    </form>
+    <script>
+      (() => {
+        document.addEventListener('DOMContentLoaded', () => {
+          let socket = null;
+          const chatBox = document.getElementById('chatBox');
+          const msgBox = chatBox.children[0];
+          const messages = document.getElementById('messages');
+          const createElm = (element, text) => {
+            const elm = document.createElement(element)
+            elm.innerText = text
+            return elm
+          }
+          if (!window['WebSocket']) {
+            alert('Error!!: Cannot use WebSocket on your browser.\nPlease use modern browser like Google Chrome, Mozilla Firefox.');
+          } else {
+            socket = new WebSocket('ws://localhost:3000/room');
+            socket.onclose = () => {
+              alert('Completed connecting.')
+            }
+            socket.onmessage = e => {
+              messages.insertBefore(createElm('li',e.data), messages.firstChild)
+            }
+          }
+          chatBox.addEventListener('submit', e => {
+            e.preventDefault()
+            e.stopPropagation()
+            if (!msgBox.value) {
+              return false
+            }
+            if (!socket) {
+              alert('Error!!: cannot connect WebSocket.');
+              return false
+            }
+            socket.send(msgBox.value);
+            msgBox.value = '';
+            return false
+          })
+        })
+      })()
+    </script>
+  </div>
 </body>
 </html>
