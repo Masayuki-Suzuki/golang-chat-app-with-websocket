@@ -17,3 +17,8 @@ func TestNew(t *testing.T) {
 		}
 	}
 }
+
+func TestOFF(t *testing.T) {
+	var silientTracer Tracer = Off()
+	silientTracer.Trace("Data")
+}
