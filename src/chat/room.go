@@ -1,10 +1,11 @@
 package main
 
 import (
-	"github.com/gorilla/websocket"
 	"log"
 	"net/http"
 	"trace"
+
+	"github.com/gorilla/websocket"
 )
 
 type room struct {

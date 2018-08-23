@@ -17,7 +17,7 @@ type templateHandler struct {
 
 func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	t.once.Do(func() {
-		t.templ = template.Must(template.ParseFiles(filepath.Join("templates", t.filename)))
+		t.templ = template.Must(template.ParseFiles(filepath.Join("./templates", t.filename)))
 	})
 	t.templ.Execute(w, r) // Should check return value in actual project.
 }
@@ -27,7 +27,7 @@ func main() {
 	flag.Parse()
 	r := newRoom()
 	//r.tracer = trace.New(os.Stdout)
-	http.Handle("/", &templateHandler{filename: "chat.html"})
+	http.Handle("/chat", MustAuth(&templateHandler{filename: "chat.html"}))
 	http.Handle("/room", r)
 	go r.run() // Start chat room.
 	log.Println("Starting web server. Port: ", *addr)
