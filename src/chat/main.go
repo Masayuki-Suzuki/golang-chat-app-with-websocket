@@ -7,6 +7,13 @@ import (
 	"path/filepath"
 	"sync"
 	"text/template"
+
+	"os"
+
+	"github.com/joho/godotenv"
+	"github.com/stretchr/gomniauth"
+	"github.com/stretchr/gomniauth/providers/github"
+	"github.com/stretchr/gomniauth/providers/google"
 )
 
 type templateHandler struct {
@@ -22,9 +29,29 @@ func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	t.templ.Execute(w, r) // Should check return value in actual project.
 }
 
+func EnvLoad() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Couldn't load .env file.")
+	}
+}
+
 func main() {
+	EnvLoad()
+
+	SECURITY_KEY := os.Getenv("SECURITY_KEY")
+	GOOGLE_AUTH_CLIENT := os.Getenv("GOOGLE_AUTH_CLIENT")
+	GOOGLE_AUTH_KEY := os.Getenv("GOOGLE_AUTH_KEY")
+	GITHUB_AUTH_CLIENT := os.Getenv("GITHUB_AUTH_CLIENT")
+	GITHUB_AUTH_KEY := os.Getenv("GITHUB_AUTH_KEY")
+
 	var addr = flag.String("addr", ":3000", "Application Address")
 	flag.Parse()
+	// Setup Gomniauth
+	gomniauth.SetSecurityKey(SECURITY_KEY)
+	gomniauth.WithProviders(
+		google.New(GOOGLE_AUTH_CLIENT, GOOGLE_AUTH_KEY, "http://localhost:3000/auth/callback/google"),
+		github.New(GITHUB_AUTH_CLIENT, GITHUB_AUTH_KEY, "http://localhost:3000/auth/callback/github"))
 	r := newRoom()
 	//r.tracer = trace.New(os.Stdout)
 	http.Handle("/assets/", http.StripPrefix("/assets", http.FileServer(http.Dir("./assets/"))))
