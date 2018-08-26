@@ -32,13 +32,17 @@
       document.addEventListener('DOMContentLoaded', () => {
         let socket = null;
         const chatBox = document.getElementById('chatBox');
-        const msgBox = chatBox.children[0];
+        const msgBox = chatBox.querySelector('.chatTextArea');
         const messages = document.getElementById('messages');
-        const createElm = (element, text) => {
+
+        const createElm = (element, data) => {
+          console.log('createElm')
           const elm = document.createElement(element);
-          elm.innerText = text;
+          elm.appendChild(document.createElement('strong')).innerText = `${data.Name} : `
+          elm.appendChild(document.createElement('span')).innerText = `${data.Message}`
           return elm;
         }
+
         if (!window['WebSocket']) {
           alert('Error!!: Cannot use WebSocket on your browser.\nPlease use modern browser like Google Chrome, Mozilla Firefox.');
         } else {
@@ -47,20 +51,22 @@
             alert('connecting closed.');
           }
           socket.onmessage = e => {
-            messages.insertBefore(createElm('li',e.data), messages.firstChild);
+            const msg = JSON.parse(e.data)
+            messages.insertBefore(createElm('li',msg), messages.firstChild);
           }
         }
         chatBox.addEventListener('submit', e => {
           e.preventDefault();
           e.stopPropagation();
           if (!msgBox.value) {
+            console.log(msgBox)
             return false;
           }
           if (!socket) {
             alert('Error!!: cannot connect WebSocket.');
             return false;
           }
-          socket.send(msgBox.value);
+          socket.send(JSON.stringify({"Message": msgBox.value}));
           msgBox.value = '';
           return false;
         })
