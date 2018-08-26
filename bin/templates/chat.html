@@ -36,10 +36,21 @@
         const messages = document.getElementById('messages');
 
         const createElm = (element, data) => {
-          console.log('createElm')
+          const date = new Date(data.When)
+          const year = date.getFullYear()
+          const month = date.getMonth()
+          const day = date.getDate()
+          const time = date.toLocaleTimeString()
+          const telm = document.createElement('span')
+          telm.innerText = `${day}/${month}/${year} - ${time}`
           const elm = document.createElement(element);
-          elm.appendChild(document.createElement('strong')).innerText = `${data.Name} : `
-          elm.appendChild(document.createElement('span')).innerText = `${data.Message}`
+          const nelm = document.createElement('strong')
+          nelm.innerText = `${data.Name} : `
+          const title = document.createElement('p')
+          title.appendChild(nelm)
+          title.appendChild(telm)
+          elm.appendChild(title)
+          elm.appendChild(document.createElement('p')).innerText = `${data.Message}`
           return elm;
         }
 
@@ -48,7 +59,7 @@
         } else {
           socket = new WebSocket('ws://{{.Host}}/room');
           socket.onclose = () => {
-            alert('connecting closed.');
+            console.log('connecting closed.');
           }
           socket.onmessage = e => {
             const msg = JSON.parse(e.data)
@@ -59,7 +70,6 @@
           e.preventDefault();
           e.stopPropagation();
           if (!msgBox.value) {
-            console.log(msgBox)
             return false;
           }
           if (!socket) {
