@@ -8,3 +8,48 @@ body {
   margin: 0;
   padding: 0;
 }
+
+input {
+  display: block;
+}
+ul {
+  font-size: 1.4rem;
+  line-height: 1.4;
+  list-style: none;
+  padding: 0;
+}
+
+p {
+  margin: 0;
+}
+
+.post {
+  display: flex;
+  margin: 0 auto 20px;
+  width: 100%;
+}
+.post__avatar {
+  padding: 0 10px;
+  width: 60px;
+}
+.post__avatar img {
+  border-radius: 100%;
+  width: 100%;
+}
+.post__container {
+  width: calc(100% - 50px);
+}
+
+.post__header {
+  margin: 0 0 5px;
+}
+
+.post__date {
+  color: #aaa;
+  font-size: 1.2rem;
+}
+
+.post__user {
+  font-weight: 600;
+  font-size: 1.4rem;
+}
