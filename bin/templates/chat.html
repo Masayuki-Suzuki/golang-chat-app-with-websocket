@@ -7,94 +7,30 @@
   <title>GoChat</title>
 </head>
 <body>
-  <h2>Chat Application with WebSocket</h2>
-  <div>
-    <form id="chatBox">
-      {{.UserData.name}}:<br/>
-      <textarea class="chatTextArea" name="chatText" cols="30" rows="10"></textarea>
-      <button>Submit</button>
-      <p>
-        <a href="/logout">サインアウト</a>
+  <div id="app">
+    <header class="header">
+      <h1 class="header__brand">GoChat</h1>
+      <p class="header__user">
+        <span class="header__avatar"><img src="{{.UserData.avatar_url}}" alt=""></span>
+        <span class="header__name">{{.UserData.name}}</span>
       </p>
-    </form>
-    <ul id="messages"></ul>
+      <nav class="nav">
+        <ul class="navList">
+          <li class="navList__item">
+            <a href="/logout">Log Out</a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+    <div class="chatContainer">
+      <ul id="messages"></ul>
+      <form id="chatBox">
+        <p class="chatBox__header">Send message from <span>{{.UserData.name}}</span>:</p>
+        <textarea class="chatTextArea" name="chatText" rows="5" placeholder="Enter your message here. (Press Shift + Enter key for send)"></textarea>
+        <p class="chatBox__footer"><button class="submitBtn">Submit</button></p>
+      </form>
+    </div>
   </div>
-  <script>
-    (() => {
-      // post element template
-      const template = document.createElement('div');
-      const postTime = document.createElement('span');
-      const userName = document.createElement('strong');
-      const postHeader = document.createElement('p')
-      const post = document.createElement('p');
-      const postContainer = document.createElement('div');
-      const avatar = document.createElement('img');
-      const avatarContainer = document.createElement('div');
-      postTime.classList.add('post__date');
-      userName.classList.add('post__user');
-      postHeader.appendChild(userName);
-      postHeader.appendChild(postTime);
-      postHeader.classList.add('post__header');
-      post.classList.add('post__main');
-      postContainer.appendChild(postHeader);
-      postContainer.appendChild(post);
-      postContainer.classList.add('post__container');
-      avatarContainer.appendChild(avatar);
-      avatarContainer.classList.add('post__avatar');
-      template.appendChild(avatarContainer);
-      template.appendChild(postContainer);
-      template.classList.add('post');
-
-      document.addEventListener('DOMContentLoaded', () => {
-        let socket = null;
-        const chatBox = document.getElementById('chatBox');
-        const msgBox = chatBox.querySelector('.chatTextArea');
-        const messages = document.getElementById('messages');
-
-        const createElm = (element, data) => {
-          const date = new Date(data.When);
-          const dateOpt = {
-            weekday: "short", year: "numeric", month: "short",
-            day: "numeric", hour: "2-digit", minute: "2-digit"
-          };
-          const elm = document.createElement(element);
-          const content = template.cloneNode(true);
-          content.querySelector('.post__date').textContent = ` - ${date.toLocaleTimeString('en-us', dateOpt)}`;
-          content.querySelector('.post__user').textContent = data.Name;
-          content.querySelector('.post__main').textContent = data.Message;
-          content.querySelector('.post__avatar').children[0].src = data.AvatarURL || '/assets/images/user.png';
-          elm.appendChild(content);
-          return elm;
-        }
-
-        if (!window['WebSocket']) {
-          alert('Error!!: Cannot use WebSocket on your browser.\nPlease use modern browser like Google Chrome, Mozilla Firefox.');
-        } else {
-          socket = new WebSocket('ws://{{.Host}}/room');
-          socket.onclose = () => {
-            console.log('connecting closed.');
-          }
-          socket.onmessage = e => {
-            const msg = JSON.parse(e.data);
-            messages.insertBefore(createElm('li',msg), messages.firstChild);
-          }
-        }
-        chatBox.addEventListener('submit', e => {
-          e.preventDefault();
-          e.stopPropagation();
-          if (!msgBox.value) {
-            return false;
-          }
-          if (!socket) {
-            alert('Error!!: cannot connect WebSocket.');
-            return false;
-          }
-          socket.send(JSON.stringify({"Message": msgBox.value}));
-          msgBox.value = '';
-          return false;
-        });
-      });
-    })();
-  </script>
+  <script src="/assets/js/app.js" data-host="{{.Host}}"></script>
 </body>
 </html>
