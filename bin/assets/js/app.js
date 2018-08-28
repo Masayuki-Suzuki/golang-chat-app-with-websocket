@@ -80,22 +80,5 @@
         submitHandler(e)
       }
     })
-
-    document.querySelector('.header__user').addEventListener('click', e => {
-      e.preventDefault();
-      e.stopPropagation();
-      const userElm = document.querySelector('.header__user');
-      if (userElm.classList.contains('isOpened')) {
-        userElm.classList.remove('isOpened');
-      } else {
-        userElm.classList.add('isOpened');
-      }
-    })
-    document.getElementById('app').addEventListener('click', e => {
-      const userElm = document.querySelector('.header__user');
-      if (userElm.classList.contains('isOpened')) {
-        userElm.classList.remove('isOpened');
-      }
-    })
   });
 })();

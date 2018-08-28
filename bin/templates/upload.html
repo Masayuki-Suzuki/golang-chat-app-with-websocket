@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
   <link rel="stylesheet" href="/assets/css/style.css">
-  <title>Chat Room - GoChat</title>
+  <title>Avatar Upload - GoChat</title>
 </head>
 <body>
   <div id="app">
@@ -25,16 +25,23 @@
         </ul>
       </nav>
     </header>
-    <div class="chatContainer">
-      <ul id="messages"></ul>
-      <form id="chatBox">
-        <p class="chatBox__header">Send message from <span>{{.UserData.name}}</span>:</p>
-        <textarea class="chatTextArea" name="chatText" rows="5" placeholder="Enter your message here. (Press Shift + Enter key for send)"></textarea>
-        <p class="chatBox__footer"><button class="submitBtn">Submit</button></p>
-      </form>
-    </div>
+    <main class="mainContent">
+      <div class="container">
+        <div class="page-header">
+          <h2>Up Load Image:</h2>
+        </div>
+        <form role="form" action="/uploader" enctype="multipart/form-data" method="post">
+          <input type="hidden" name="userid" value="{{.UserData.userid}}">
+          <div class="form-group">
+            <label for="message">Choose file:</label>
+            <input type="file" name="avatarFile">
+          </div>
+          <input type="submit" class="btn btn-default" value="Upload">
+        </form>
+        <p><a href="/chat">return to chat room</a></p>
+      </div>
+    </main>
   </div>
-  <script src="/assets/js/app.js" data-host="{{.Host}}"></script>
   <script src="/assets/js/common.js"></script>
 </body>
 </html>
