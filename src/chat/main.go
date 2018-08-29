@@ -59,7 +59,7 @@ func main() {
 	gomniauth.WithProviders(
 		google.New(GOOGLE_AUTH_CLIENT, GOOGLE_AUTH_KEY, "http://localhost:3000/auth/callback/google"),
 		github.New(GITHUB_AUTH_CLIENT, GITHUB_AUTH_KEY, "http://localhost:3000/auth/callback/github"))
-	r := newRoom(UseGravatar)
+	r := newRoom(UseFileSystemAvatar)
 	//r.tracer = trace.New(os.Stdout)
 	http.Handle("/assets/", http.StripPrefix("/assets", http.FileServer(http.Dir("./assets/"))))
 	http.Handle("/avatars/", http.StripPrefix("/avatars", http.FileServer(http.Dir("./avatars"))))
