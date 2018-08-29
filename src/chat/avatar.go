@@ -14,7 +14,7 @@ type Avatar interface {
 	// GetAvatarURL returns an avatar url of designated client.
 	// If some problems are happened, it will return error.
 	// Especially, when it cannot get url, it will return ErrNoAvatarURL.
-	GetAvatarURL(c *client) (string, error)
+	GetAvatarURL(ChatUser) (string, error)
 }
 
 type AuthAvatar struct{}

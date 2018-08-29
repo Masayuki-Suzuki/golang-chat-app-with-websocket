@@ -11,7 +11,19 @@ import (
 
 	"github.com/stretchr/gomniauth"
 	"github.com/stretchr/objx"
+
+	gomniauthcommon "github.com/stretchr/gomniauth/common"
 )
+
+type ChatUser interface {
+	UniqueID() string
+	AvatarURL() string
+}
+
+type chatUser struct {
+	gomniauthcommon.User
+	uniqueID string
+}
 
 type authHandler struct {
 	next http.Handler
@@ -83,4 +95,8 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		fmt.Fprintf(w, "System cannot respond \"%s\" action", action)
 	}
+}
+
+func (u chatUser) UniqueID() string {
+	return u.uniqueID
 }
